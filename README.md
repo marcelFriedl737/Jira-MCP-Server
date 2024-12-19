@@ -1,4 +1,4 @@
-# PaddockPal Jira MCP Server
+# Jira MCP Server
 
 An MCP server that provides tools for managing Jira projects, issues, and workflows. The server enables:
 
