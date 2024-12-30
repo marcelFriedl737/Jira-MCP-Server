@@ -276,6 +276,19 @@ class JiraServer {
   private readonly server: Server;
   private readonly jira: JiraClient;
   private readonly toolDefinitions = {
+    delete_issue: {
+      description: "Delete a Jira issue or subtask",
+      inputSchema: {
+        type: "object",
+        properties: {
+          issueKey: {
+            type: "string",
+            description: "Key of the issue to delete",
+          },
+        },
+        required: ["issueKey"],
+      },
+    },
     get_issues: {
       description: "Get all issues and subtasks for a project",
       inputSchema: {
@@ -464,6 +477,26 @@ class JiraServer {
       await this.server.close();
       process.exit(0);
     });
+  }
+
+  private validateDeleteIssueArgs(args: unknown): args is { issueKey: string } {
+    if (typeof args !== "object" || args === null) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Arguments must be an object"
+      );
+    }
+
+    const { issueKey } = args as { issueKey?: string };
+
+    if (typeof issueKey !== "string" || issueKey.length === 0) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Issue key is required and must be a string"
+      );
+    }
+
+    return true;
   }
 
   private validateCreateIssueArgs(args: unknown): args is CreateIssueArgs {
@@ -857,6 +890,40 @@ class JiraServer {
                         key: response.key,
                         url: `https://${JIRA_HOST}/browse/${response.key}`,
                       },
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+            };
+          }
+
+          case "delete_issue": {
+            if (
+              !request.params.arguments ||
+              typeof request.params.arguments !== "object"
+            ) {
+              throw new McpError(
+                ErrorCode.InvalidParams,
+                "Arguments are required"
+              );
+            }
+
+            const unknownArgs = request.params.arguments as unknown;
+            this.validateDeleteIssueArgs(unknownArgs);
+            const { issueKey } = unknownArgs as { issueKey: string };
+
+            await this.jira.deleteIssue(issueKey);
+
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      message: "Issue deleted successfully",
+                      issueKey,
                     },
                     null,
                     2

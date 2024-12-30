@@ -1,6 +1,10 @@
 # Jira MCP Server
 
-An MCP server that provides tools for managing Jira projects, issues, and workflows. The server enables:
+Speak to Jira in natural language to get information on and modify your project. Use it with Claude Desktop in combination with a custom README that you will create with project information, so that you can delegate PM tasks, (e.g. given yoou have a list of my team and their specialities, assign any new issue to the most relevant person).
+
+Built using the [Model Context Protocol](https://github.com/modelcontextprotocol).
+
+The server enables:
 
 - Project creation and configuration
 - Issue and subtask management
@@ -121,14 +125,18 @@ Required environment variables:
 ```typescript
 // Delete single issue
 {
-  issueKey: "PROJECT-123",
-  deleteSubtasks: false
+  issueKey: "PROJECT-123"
 }
 
 // Delete issue with subtasks
 {
   issueKey: "PROJECT-123",
   deleteSubtasks: true
+}
+
+// Delete multiple issues
+{
+  issueKeys: ["PROJECT-123", "PROJECT-124"]
 }
 ```
 
@@ -171,7 +179,76 @@ The server provides detailed error messages for:
 - Permission issues
 - API rate limits
 
+## Setup Instructions
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/George5562/Jira-MCP-Server.git
+   cd Jira-MCP-Server
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   Create a `.env` file in the root directory:
+
+   ```bash
+   JIRA_HOST=your-instance.atlassian.net
+   JIRA_EMAIL=your-email@example.com
+   JIRA_API_TOKEN=your-api-token
+   ```
+
+4. Build the project:
+
+   ```bash
+   npm run build
+   ```
+
+5. Start the server:
+   ```bash
+   npm start
+   ```
+
+## Configuring Claude Desktop
+
+To use this MCP server with Claude Desktop:
+
+1. Locate your Claude Desktop configuration file:
+
+   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+   - Linux: `~/.config/Claude/claude_desktop_config.json`
+
+2. Add the Jira MCP server to your configuration:
+
+   ```json
+   {
+     "mcp_servers": [
+       {
+         "name": "jira-server",
+         "command": "npm start",
+         "cwd": "/path/to/jira-server",
+         "env": {
+           "JIRA_HOST": "your-instance.atlassian.net",
+           "JIRA_EMAIL": "your-email@example.com",
+           "JIRA_API_TOKEN": "your-api-token"
+         }
+       }
+     ]
+   }
+   ```
+
+   Replace `/path/to/jira-server` with the absolute path to your cloned repository.
+
+3. Restart Claude Desktop to apply the changes.
+
 ## References
 
+- [Model Context Protocol](https://github.com/modelcontextprotocol)
 - [Jira REST API Documentation](https://docs.atlassian.com/software/jira/docs/api/REST/7.12.0)
 - [Jira REST API Examples](https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/)
