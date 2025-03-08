@@ -641,6 +641,18 @@ class JiraServer {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         switch (request.params.name) {
+          case "list_fields": {
+            const response = await this.jira.listFields();
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(response, null, 2),
+                },
+              ],
+            };
+          }
+
           case "list_link_types": {
             const response = await this.jira.listIssueLinkTypes();
             return {
