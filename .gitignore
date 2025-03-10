@@ -3,3 +3,4 @@ build/
 *.log
 .env*
 claude_README.md
+run-with-env.sh
