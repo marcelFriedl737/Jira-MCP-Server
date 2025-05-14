@@ -1,4 +1,5 @@
 # Jira MCP Server
+
 [![smithery badge](https://smithery.ai/badge/@George5562/Jira-MCP-Server)](https://smithery.ai/server/@George5562/Jira-MCP-Server)
 
 Speak to Jira in natural language to get information on and modify your project. Use it with Claude Desktop in combination with a custom README that you will create with project information, so that you can delegate PM tasks, (e.g. given yoou have a list of my team and their specialities, assign any new issue to the most relevant person).
@@ -233,25 +234,27 @@ To use this MCP server with Claude Desktop:
 
    ```json
    {
-     "mcp_servers": [
-       {
+     "mcpServers": {
+       "jira-server": {
          "name": "jira-server",
-         "command": "npm start",
+         "command": "/path/to/node",
+         "args": ["/path/to/jira-server/build/index.js"],
          "cwd": "/path/to/jira-server",
          "env": {
-           "JIRA_HOST": "your-instance.atlassian.net",
+           "JIRA_HOST": "your-jira-instance.atlassian.net",
            "JIRA_EMAIL": "your-email@example.com",
            "JIRA_API_TOKEN": "your-api-token"
          }
        }
-     ]
+     }
    }
    ```
 
    Replace `/path/to/jira-server` with the absolute path to your cloned repository.
+   Replace `/path/to/node` with the absolute path to your Node.js executable (you can usually find this by running `which node` or `where node` in your terminal).
+   Using the direct path to the Node.js executable and the built JavaScript file (`build/index.js` after running `npm run build`) is recommended for reliability.
 
 3. Restart Claude Desktop to apply the changes.
-
 
 ### Installing via Smithery
 
@@ -262,6 +265,7 @@ npx -y @smithery/cli install @George5562/Jira-MCP-Server --client claude
 ```
 
 ### Manual Installation
+
 1. Clone the repository:
 
    ```bash
