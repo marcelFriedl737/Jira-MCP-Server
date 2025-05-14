@@ -290,7 +290,7 @@ class JiraServer {
       },
     },
     get_issues: {
-      description: "Get all issues and subtasks for a project",
+      description: "Get all issues and subtasks for a Jira project",
       inputSchema: {
         type: "object",
         properties: {
@@ -348,10 +348,15 @@ class JiraServer {
       },
     },
     list_issue_types: {
-      description: "List all available issue types",
+      description: "List all available Jira issue types",
       inputSchema: {
         type: "object",
-        properties: {},
+        properties: {
+          projectKey: {
+            type: "string",
+            description: "Optional project key to filter issue types by project",
+          },
+        },
         required: [],
       },
     },
@@ -641,6 +646,18 @@ class JiraServer {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         switch (request.params.name) {
+          case "list_fields": {
+            const response = await this.jira.listFields();
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(response, null, 2),
+                },
+              ],
+            };
+          }
+
           case "list_link_types": {
             const response = await this.jira.listIssueLinkTypes();
             return {
@@ -654,7 +671,42 @@ class JiraServer {
           }
 
           case "list_issue_types": {
-            const response = await this.jira.listIssueTypes();
+            let response;
+            if (
+              request.params.arguments &&
+              typeof request.params.arguments === "object" &&
+              "projectKey" in request.params.arguments
+            ) {
+              // Get issue types for specific project
+              const projectKey = request.params.arguments.projectKey as string;
+              
+              // First get all issue types
+              const allIssueTypes = await this.jira.listIssueTypes();
+              
+              // Then get the project to find which issue types are associated with it
+              try {
+                const project = await this.jira.getProject(projectKey);
+                
+                if (project && project.issueTypes) {
+                  // Filter issue types to only those in the project
+                  const projectIssueTypeIds = project.issueTypes.map((t: any) => t.id);
+                  
+                  response = allIssueTypes.filter((type: IssueType) => 
+                    projectIssueTypeIds.includes(type.id)
+                  );
+                } else {
+                  response = allIssueTypes;
+                }
+              } catch (error) {
+                // If there's an error getting the project, fall back to all issue types
+                console.error(`Error getting project ${projectKey}:`, error);
+                response = allIssueTypes;
+              }
+            } else {
+              // Get all issue types
+              response = await this.jira.listIssueTypes();
+            }
+            
             return {
               content: [
                 {
