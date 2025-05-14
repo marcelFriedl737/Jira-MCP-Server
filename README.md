@@ -1,4 +1,5 @@
 # Jira MCP Server
+[![smithery badge](https://smithery.ai/badge/@George5562/Jira-MCP-Server)](https://smithery.ai/server/@George5562/Jira-MCP-Server)
 
 Speak to Jira in natural language to get information on and modify your project. Use it with Claude Desktop in combination with a custom README that you will create with project information, so that you can delegate PM tasks, (e.g. given yoou have a list of my team and their specialities, assign any new issue to the most relevant person).
 
@@ -250,6 +251,49 @@ To use this MCP server with Claude Desktop:
    Replace `/path/to/jira-server` with the absolute path to your cloned repository.
 
 3. Restart Claude Desktop to apply the changes.
+
+
+### Installing via Smithery
+
+To install Jira MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@George5562/Jira-MCP-Server):
+
+```bash
+npx -y @smithery/cli install @George5562/Jira-MCP-Server --client claude
+```
+
+### Manual Installation
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/George5562/Jira-MCP-Server.git
+   cd Jira-MCP-Server
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   Create a `.env` file in the root directory:
+
+   ```bash
+   JIRA_HOST=your-instance.atlassian.net
+   JIRA_EMAIL=your-email@example.com
+   JIRA_API_TOKEN=your-api-token
+   ```
+
+4. Build the project:
+
+   ```bash
+   npm run build
+   ```
+
+5. Start the server:
+   ```bash
+   npm start
+   ```
 
 ## References
 
