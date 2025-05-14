@@ -4,6 +4,10 @@ Speak to Jira in natural language to get information on and modify your project.
 
 Built using the [Model Context Protocol](https://github.com/modelcontextprotocol).
 
+<a href="https://glama.ai/mcp/servers/lblw6pvk7i">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/lblw6pvk7i/badge" alt="Jira Server MCP server" />
+</a>
+
 The server enables:
 
 - Project creation and configuration
