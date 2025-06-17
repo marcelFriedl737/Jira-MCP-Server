@@ -127,6 +127,7 @@ interface UpdateIssueArgs {
   assignee?: string;
   status?: string;
   priority?: string;
+  customfield_13884?: string;
 }
 
 interface CreateIssueLinkArgs {
@@ -334,6 +335,10 @@ class JiraServer {
           priority: {
             type: "string",
             description: "New priority",
+          },
+          customfield_13884: {
+            type: "string",
+            description: "Value for custom field 13884 (Action required)",
           },
         },
         required: ["issueKey"],
@@ -817,6 +822,9 @@ class JiraServer {
             }
             if (args.priority) {
               updateFields.priority = { name: args.priority };
+            }
+            if (args.customfield_13884) {
+              updateFields.customfield_13884 = args.customfield_13884;
             }
 
             if (Object.keys(updateFields).length > 0) {
